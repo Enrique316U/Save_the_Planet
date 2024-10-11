@@ -36,3 +36,80 @@
     transform: rotate(360deg);
   }
 }
+
+/* Estilo global */
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #eef2f3; /* Color suave de fondo */
+  margin: 0;
+  padding: 20px;
+}
+
+/* Título principal */
+.title {
+  text-align: center;
+  color: #333;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+/* Contenedor principal que organiza las tarjetas */
+.container {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px; /* Espacio entre tarjetas */
+  margin-top: 20px;
+}
+
+/* Estilo general de las tarjetas */
+.card {
+  background: white; /* Fondo blanco */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+  padding: 30px;
+  width: 280px;
+  text-align: center;
+  transition: transform 0.2s ease-in-out; /* Animación suave al hacer hover */
+}
+
+/* Tarjeta para la temperatura, con color distintivo */
+.card.temperature {
+  border-top: 5px solid #ff5733; /* Color de borde superior (naranja) */
+}
+
+/* Tarjeta para la humedad, con color distintivo */
+.card.humidity {
+  border-top: 5px solid #3498db; /* Color de borde superior (azul) */
+}
+
+/* Tarjeta para la contaminación, con color distintivo */
+.card.contamination {
+  border-top: 5px solid #2ecc71; /* Color de borde superior (verde) */
+}
+
+/* Estilo de los valores de los sensores */
+.sensor-value {
+  font-size: 2.5em; /* Tamaño del texto grande para los valores */
+  margin: 15px 0;
+  font-weight: bold;
+}
+
+/* Estilo de la alerta */
+.alert {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 30px;
+  font-size: 1.5em;
+  padding: 10px;
+  background-color: #ffe6e6; /* Fondo rojo claro */
+  border: 2px solid red; /* Borde rojo */
+  border-radius: 5px;
+}
+
+/* Animación de hover sobre las tarjetas */
+.card:hover {
+  transform: scale(1.05); /* Aumenta ligeramente el tamaño */
+}
+
+/* Nota: Puedes añadir barras de progreso o gráficos en el futuro dentro de .card */

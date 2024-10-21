@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 
 const sensorDataSchema = new mongoose.Schema({
-  temperature: { type: Number, required: false }, // Puede que algunos mensajes no incluyan temperatura
-  humidity: { type: Number, required: false }, // Humedad
-  contamination: { type: Number, required: false }, // MQ Contaminación
-  soundIntensity: { type: Number, required: false }, // Intensidad de Sonido
-  latitude: { type: Number, required: false }, // Latitud
-  longitude: { type: Number, required: false }, // Longitud
+  temperatura: { type: Number, required: false }, // Temperatura
+  humedad: { type: Number, required: false }, // Humedad
+  contaminacion: { type: Number, required: false }, // Contaminación
+  sonido: { type: Number, required: false }, // Intensidad de Sonido
+  latitud: { type: Number, required: false }, // Latitud
+  longitud: { type: Number, required: false }, // Longitud
   timestamp: { type: Date, default: Date.now }, // Marca de tiempo automática
 });
 

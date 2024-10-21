@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const mqtt = require("mqtt"); // <--- MQTT agregado
+const mqtt = require("mqtt");
 const SensorData = require("./models/SensorData");
 require("dotenv").config();
 
@@ -23,57 +23,39 @@ mongoose
     process.exit(1);
   });
 
-// Conectar al broker MQTT (Ejemplo: broker público de EMQX)
+// Conectar al broker MQTT
 const mqttBrokerUrl = "mqtt://broker.emqx.io:1883"; // URL del broker público
 const mqttClient = mqtt.connect(mqttBrokerUrl); // Conectar al broker
 
-// Suscribirse a los topics específicos que publica el ESP32
+// Suscribirse a un único topic donde se publican todos los datos
 mqttClient.on("connect", () => {
   console.log("Conectado al broker MQTT");
 
-  // Suscribirse a los topics publicados por el ESP32
-  mqttClient.subscribe("esp32/sensor/temperature3a3WYwBHfmqkX2");
-  mqttClient.subscribe("esp32/sensor/humidity3a3WYwBHfmqkX2");
-  mqttClient.subscribe("esp32/sensor/contaminacion3a3WYwBHfmqkX2");
-  mqttClient.subscribe("esp32/sensor/sound3a3WYwBHfmqkX2");
-  mqttClient.subscribe("esp32/sensor/latitude3a3WYwBHfmqkX2");
-  mqttClient.subscribe("esp32/sensor/longitude3a3WYwBHfmqkX2");
+  // Suscribirse al topic único
+  mqttClient.subscribe("esp32/sensor/datos3a3WYwBHfmqkX2", (err) => {
+    if (!err) {
+      console.log("Suscrito al topic esp32/sensor/datos3a3WYwBHfmqkX2");
+    } else {
+      console.error("Error al suscribirse al topic:", err);
+    }
+  });
 });
 
-// Procesar los mensajes recibidos en cada topic
+// Procesar los mensajes recibidos en el único topic
 mqttClient.on("message", async (topic, message) => {
   const msg = message.toString(); // Convertir el mensaje a string
-  let sensorData = {};
-
   try {
-    // Procesar cada topic y extraer los valores
-    if (topic === "esp32/sensor/temperature3a3WYwBHfmqkX2") {
-      const temperature = parseFloat(msg.split("Temperatura: ")[1]); // Ajustado para "Temperatura"
-      sensorData.temperature = temperature;
-    } else if (topic === "esp32/sensor/humidity3a3WYwBHfmqkX2") {
-      const humidity = parseFloat(msg.split("Humedad: ")[1]); // Ajustado para "Humedad"
-      sensorData.humidity = humidity;
-    } else if (topic === "esp32/sensor/contaminacion3a3WYwBHfmqkX2") {
-      const contamination = parseFloat(msg.split("MQ Contaminación: ")[1]); // Ajustado para "MQ Contaminación"
-      sensorData.contamination = contamination;
-    } else if (topic === "esp32/sensor/sound3a3WYwBHfmqkX2") {
-      const soundIntensity = parseFloat(msg.split("Intensidad de Sonido: ")[1]); // Ajustado para "Intensidad de Sonido"
-      sensorData.soundIntensity = soundIntensity;
-    } else if (topic === "esp32/sensor/latitude3a3WYwBHfmqkX2") {
-      const latitude = parseFloat(msg.split("Latitud: ")[1]); // Ajustado para "Latitud"
-      sensorData.latitude = latitude;
-    } else if (topic === "esp32/sensor/longitude3a3WYwBHfmqkX2") {
-      const longitude = parseFloat(msg.split("Longitud: ")[1]); // Ajustado para "Longitud"
-      sensorData.longitude = longitude;
-    }
+    // Parsear el mensaje como JSON
+    const sensorData = JSON.parse(msg);
 
-    // Si hay algún dato que almacenar
-    if (Object.keys(sensorData).length > 0) {
-      sensorData.timestamp = new Date(); // Agregar timestamp
-      const newSensorData = new SensorData(sensorData);
-      await newSensorData.save(); // Guardar en MongoDB
-      console.log("Datos del sensor almacenados:", sensorData);
-    }
+    // Agregar timestamp a los datos
+    sensorData.timestamp = new Date();
+
+    // Guardar en MongoDB
+    const newSensorData = new SensorData(sensorData);
+    await newSensorData.save();
+
+    console.log("Datos del sensor almacenados:", sensorData);
   } catch (error) {
     console.error("Error al procesar el mensaje MQTT:", error.message);
   }
@@ -106,7 +88,7 @@ app.use((err, req, res, next) => {
   res.status(500).send("Algo salió mal!");
 });
 
-// Iniciar el servidor (Solo una vez)
+// Iniciar el servidor
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });

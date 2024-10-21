@@ -6,6 +6,7 @@ function App() {
   const [temperature, setTemperature] = useState("--");
   const [humidity, setHumidity] = useState("--");
   const [contamination, setContamination] = useState("--");
+  const [sound, setSound] = useState("--");
   const [alertLevel, setAlertLevel] = useState(""); // Estado para manejar el nivel de alerta
   const [error, setError] = useState(null); // Estado para manejar errores
 
@@ -24,18 +25,25 @@ function App() {
   // Función para obtener los datos del servidor
   const updateData = async () => {
     try {
-      const response = await fetch("http://192.168.209.64/api");
+      const response = await fetch(
+        "http://ubuntu-pi:5000/api/sensordata/latest"
+      ); // URL correcta
       const data = await response.json();
+
       const {
-        temperature,
-        humidity,
+        temperatura: temperature,
+        humedad: humidity,
         contaminacion: contamination,
-      } = data.variables;
+        sonido: sound,
+        latitud: latitude,
+        longitud: longitude,
+      } = data;
 
       // Actualizamos los estados con los valores recibidos
       setTemperature(temperature);
       setHumidity(humidity);
       setContamination(contamination);
+      setSound(sound);
       setAlertLevel(calculateAlertLevel({ temperature, contamination }));
       setError(null); // Resetear errores si se obtuvieron los datos correctamente
     } catch (error) {
@@ -97,6 +105,18 @@ function App() {
             <div
               className="fill"
               style={{ width: getProgressBarWidth(contamination, 1000) }}
+            ></div>
+          </div>
+        </div>
+
+        {/* Tarjeta para mostrar el nivel de sonido */}
+        <div className={`card sound`}>
+          <h2>Nivel de Sonido</h2>
+          <div className="sensor-value">{sound} dB</div>
+          <div className="progress-bar">
+            <div
+              className="fill"
+              style={{ width: getProgressBarWidth(sound, 100) }}
             ></div>
           </div>
         </div>

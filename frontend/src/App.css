@@ -89,6 +89,10 @@ body {
   border-top: 5px solid #2ecc71;
 }
 
+.card.sound {
+  border-top: 5px solid #9b59b6;
+}
+
 /* Estilo de los valores de los sensores */
 .sensor-value {
   font-size: 2.5em; /* Tamaño del texto grande para los valores */

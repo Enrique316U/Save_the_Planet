@@ -2,13 +2,21 @@ import React, { useState, useEffect } from "react";
 import "./App.css"; // Estilos globales
 
 function App() {
-  // Estados para almacenar los valores de los sensores
-  const [temperature, setTemperature] = useState("--");
-  const [humidity, setHumidity] = useState("--");
-  const [contamination, setContamination] = useState("--");
-  const [sound, setSound] = useState("--");
-  const [alertLevel, setAlertLevel] = useState(""); // Estado para manejar el nivel de alerta
-  const [error, setError] = useState(null); // Estado para manejar errores
+  // Estados para el Sensor 1
+  const [temperature1, setTemperature1] = useState("--");
+  const [humidity1, setHumidity1] = useState("--");
+  const [contamination1, setContamination1] = useState("--");
+  const [sound1, setSound1] = useState("--");
+  const [alertLevel1, setAlertLevel1] = useState(""); // Estado para la alerta del Sensor 1
+  const [error1, setError1] = useState(null); // Error del Sensor 1
+
+  // Estados para el Sensor 2
+  const [temperature2, setTemperature2] = useState("--");
+  const [humidity2, setHumidity2] = useState("--");
+  const [contamination2, setContamination2] = useState("--");
+  const [sound2, setSound2] = useState("--");
+  const [alertLevel2, setAlertLevel2] = useState(""); // Estado para la alerta del Sensor 2
+  const [error2, setError2] = useState(null); // Error del Sensor 2
 
   // Función para determinar el nivel de alerta
   const calculateAlertLevel = ({ temperature, contamination }) => {
@@ -22,12 +30,12 @@ function App() {
     return ""; // No hay alerta
   };
 
-  // Función para obtener los datos del servidor
-  const updateData = async () => {
+  // Función para obtener datos del Sensor 1
+  const updateData1 = async () => {
     try {
       const response = await fetch(
         "http://ubuntu-pi:5000/api/sensordata/latest"
-      ); // URL correcta
+      );
       const data = await response.json();
 
       const {
@@ -35,30 +43,60 @@ function App() {
         humedad: humidity,
         contaminacion: contamination,
         sonido: sound,
-        latitud: latitude,
-        longitud: longitude,
       } = data;
 
-      // Actualizamos los estados con los valores recibidos
-      setTemperature(temperature);
-      setHumidity(humidity);
-      setContamination(contamination);
-      setSound(sound);
-      setAlertLevel(calculateAlertLevel({ temperature, contamination }));
-      setError(null); // Resetear errores si se obtuvieron los datos correctamente
+      // Actualización de estados del Sensor 1
+      setTemperature1(temperature);
+      setHumidity1(humidity);
+      setContamination1(contamination);
+      setSound1(sound);
+      setAlertLevel1(calculateAlertLevel({ temperature, contamination }));
+      setError1(null);
     } catch (error) {
-      console.error("Error al obtener los datos del sensor:", error);
-      setError("No se pueden obtener los datos del servidor.");
+      console.error("Error al obtener los datos del sensor 1:", error);
+      setError1("No se pueden obtener los datos del servidor del sensor 1.");
     }
   };
 
-  // Hook para actualizar los datos del sensor cada 2 segundos
+  // Función para obtener datos del Sensor 2
+  const updateData2 = async () => {
+    try {
+      const response = await fetch(
+        "http://ubuntu-pi:5000/api/sensordata/second-latest"
+      );
+      const data = await response.json();
+
+      const {
+        temperatura: temperature,
+        humedad: humidity,
+        contaminacion: contamination,
+        sonido: sound,
+      } = data;
+
+      // Actualización de estados del Sensor 2
+      setTemperature2(temperature);
+      setHumidity2(humidity);
+      setContamination2(contamination);
+      setSound2(sound);
+      setAlertLevel2(calculateAlertLevel({ temperature, contamination }));
+      setError2(null);
+    } catch (error) {
+      console.error("Error al obtener los datos del sensor 2:", error);
+      setError2("No se pueden obtener los datos del servidor del sensor 2.");
+    }
+  };
+
+  // Hook para actualizar datos cada 2 segundos
   useEffect(() => {
-    const interval = setInterval(updateData, 2000); // Actualizamos cada 2 segundos
-    return () => clearInterval(interval); // Limpiamos el intervalo al desmontar el componente
+    const interval1 = setInterval(updateData1, 2000);
+    const interval2 = setInterval(updateData2, 2000);
+    return () => {
+      clearInterval(interval1);
+      clearInterval(interval2);
+    };
   }, []);
 
-  // Función para limitar el valor de la barra de progreso (0% a 100%)
+  // Función para limitar el valor de la barra de progreso
   const getProgressBarWidth = (value, max = 100) => {
     const percentage = (value / max) * 100;
     return `${Math.min(Math.max(percentage, 0), 100)}%`;
@@ -66,73 +104,115 @@ function App() {
 
   return (
     <div className="App">
-      <h1 className="title">Sistema de Monitoreo de Sensores</h1>
-      {error && <div className="alert very-grave">{error}</div>}{" "}
-      {/* Mostrar error si ocurre */}
+      <h1 className="title">USMP Sistema de Monitoreo</h1>
+
+      {/* Sensor 1 */}
+      <h2>Sensor 1</h2>
       <div className="container">
-        {/* Tarjeta para mostrar la temperatura */}
-        <div className={`card temperature ${alertLevel}`}>
+        <div className={`card temperature ${alertLevel1}`}>
           <h2>Temperatura</h2>
-          <div className="sensor-value">{temperature} °C</div>
-          {/* Barra de progreso para la temperatura */}
+          <div className="sensor-value">{temperature1} °C</div>
           <div className="progress-bar">
             <div
               className="fill"
-              style={{ width: getProgressBarWidth(temperature, 50) }}
+              style={{ width: getProgressBarWidth(temperature1, 50) }}
             ></div>
           </div>
         </div>
 
-        {/* Tarjeta para mostrar la humedad */}
-        <div className={`card humidity`}>
+        <div className="card humidity">
           <h2>Humedad</h2>
-          <div className="sensor-value">{humidity} %</div>
-          {/* Barra de progreso para la humedad */}
+          <div className="sensor-value">{humidity1} %</div>
           <div className="progress-bar">
             <div
               className="fill"
-              style={{ width: getProgressBarWidth(humidity) }}
+              style={{ width: getProgressBarWidth(humidity1) }}
             ></div>
           </div>
         </div>
 
-        {/* Tarjeta para mostrar la contaminación */}
-        <div className={`card contamination ${alertLevel}`}>
+        <div className={`card contamination ${alertLevel1}`}>
           <h2>Nivel de Contaminación</h2>
-          <div className="sensor-value">{contamination} ppm</div>
-          {/* Barra de progreso para la contaminación */}
+          <div className="sensor-value">{contamination1} ppm</div>
           <div className="progress-bar">
             <div
               className="fill"
-              style={{ width: getProgressBarWidth(contamination, 1000) }}
+              style={{ width: getProgressBarWidth(contamination1, 1000) }}
             ></div>
           </div>
         </div>
 
-        {/* Tarjeta para mostrar el nivel de sonido */}
-        <div className={`card sound`}>
+        <div className="card sound">
           <h2>Nivel de Sonido</h2>
-          <div className="sensor-value">{sound} dB</div>
+          <div className="sensor-value">{sound1} dB</div>
           <div className="progress-bar">
             <div
               className="fill"
-              style={{ width: getProgressBarWidth(sound, 100) }}
+              style={{ width: getProgressBarWidth(sound1, 100) }}
             ></div>
           </div>
         </div>
       </div>
-      {/* Mostrar alertas de diferentes niveles */}
-      {alertLevel === "minor" && (
-        <div className="alert minor">Alerta Menor: Posibles incomodidades.</div>
-      )}
-      {alertLevel === "intermediate" && (
-        <div className="alert intermediate">
-          Alerta Intermedia: Peligro Moderado.
+
+      {/* Alerta para Sensor 1 */}
+      {error1 && (
+        <div className="alert-container">
+          <div className="alert very-grave">{error1}</div>
         </div>
       )}
-      {alertLevel === "very-grave" && (
-        <div className="alert very-grave">
-          ¡ALERTA MUY GRAVE! Peligro de Muerte.
+
+      {/* Sensor 2 */}
+      <h2>Sensor 2</h2>
+      <div className="container">
+        <div className={`card temperature ${alertLevel2}`}>
+          <h2>Temperatura</h2>
+          <div className="sensor-value">{temperature2} °C</div>
+          <div className="progress-bar">
+            <div
+              className="fill"
+              style={{ width: getProgressBarWidth(temperature2, 50) }}
+            ></div>
+          </div>
+        </div>
+
+        <div className="card humidity">
+          <h2>Humedad</h2>
+          <div className="sensor-value">{humidity2} %</div>
+          <div className="progress-bar">
+            <div
+              className="fill"
+              style={{ width: getProgressBarWidth(humidity2) }}
+            ></div>
+          </div>
+        </div>
+
+        <div className={`card contamination ${alertLevel2}`}>
+          <h2>Nivel de Contaminación</h2>
+          <div className="sensor-value">{contamination2} ppm</div>
+          <div className="progress-bar">
+            <div
+              className="fill"
+              style={{ width: getProgressBarWidth(contamination2, 1000) }}
+            ></div>
+          </div>
+        </div>
+
+        <div className="card sound">
+          <h2>Nivel de Sonido</h2>
+          <div className="sensor-value">{sound2} dB</div>
+          <div className="progress-bar">
+            <div
+              className="fill"
+              style={{ width: getProgressBarWidth(sound2, 100) }}
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Alerta para Sensor 2 */}
+      {error2 && (
+        <div className="alert-container">
+          <div className="alert very-grave">{error2}</div>
         </div>
       )}
     </div>

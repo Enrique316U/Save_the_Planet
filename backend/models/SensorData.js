@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const sensorDataSchema = new mongoose.Schema({
+  sensorId: { type: Number, required: true }, // Identificador del sensor (1 o 2)
   temperatura: { type: Number, required: false }, // Temperatura
   humedad: { type: Number, required: false }, // Humedad
   contaminacion: { type: Number, required: false }, // Contaminación

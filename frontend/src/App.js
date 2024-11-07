@@ -1,4 +1,58 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import MapComponent from "./components/MapComponent";
+import Home from "./components/Home";
+import Boletin from "./components/Boletin";
+import Grafica from "./components/Grafica";
+import Datos from "./components/Datos";
+import "./App.css";
+
+// Componente de navegación
+function Header() {
+  return (
+    <nav className="header">
+      <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/boletin">Boletín</Link>
+        </li>
+        <li>
+          <Link to="/grafica">Gráfica</Link>
+        </li>
+        <li>
+          <Link to="/datos">Datos</Link>
+        </li>
+        <li>
+          <Link to="/mapa">Mapa</Link>
+        </li>
+      </ul>
+    </nav>
+  );
+}
+
+// Componente principal que configura el enrutamiento de la aplicación
+function App() {
+  return (
+    <Router>
+      <div className="App">
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/boletin" element={<Boletin />} />
+          <Route path="/grafica" element={<Grafica />} />
+          <Route path="/datos" element={<Datos />} />
+          <Route path="/mapa" element={<MapComponent />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+export default App; /*}
+
+/*import React, { useState, useEffect } from "react";
 import "./App.css"; // Estilos globales
 
 function App() {
@@ -106,7 +160,7 @@ function App() {
     <div className="App">
       <h1 className="title">USMP Sistema de Monitoreo</h1>
 
-      {/* Sensor 1 */}
+      {/* Sensor 1 */ /*
       <h2>Sensor 1</h2>
       <div className="container">
         <div className={`card temperature ${alertLevel1}`}>
@@ -154,14 +208,14 @@ function App() {
         </div>
       </div>
 
-      {/* Alerta para Sensor 1 */}
+      {/* Alerta para Sensor 1 */ /*}
       {error1 && (
         <div className="alert-container">
           <div className="alert very-grave">{error1}</div>
         </div>
       )}
 
-      {/* Sensor 2 */}
+      {/* Sensor 2 */ /*}
       <h2>Sensor 2</h2>
       <div className="container">
         <div className={`card temperature ${alertLevel2}`}>
@@ -209,7 +263,7 @@ function App() {
         </div>
       </div>
 
-      {/* Alerta para Sensor 2 */}
+      {/* Alerta para Sensor 2 */ /*}
       {error2 && (
         <div className="alert-container">
           <div className="alert very-grave">{error2}</div>
@@ -219,4 +273,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;*/

@@ -1,0 +1,54 @@
+.home-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+h1, h2 {
+  color: #960404;
+  text-align: center;
+}
+
+p {
+  text-align: justify;
+  line-height: 1.6;
+}
+
+.system-info, .features {
+  margin: 20px 0;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #f0f0f5;
+}
+
+.features ul {
+  list-style-type: disc;
+  margin: 10px 20px;
+}
+
+.media-section {
+  margin-top: 30px;
+}
+
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.image-card {
+  width: 200px;
+  text-align: center;
+}
+
+.image-card img {
+  width: 100%;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.image-card p {
+  margin-top: 5px;
+  font-size: 0.9rem;
+  color: #666;
+}

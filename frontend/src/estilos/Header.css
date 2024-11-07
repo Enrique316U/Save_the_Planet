@@ -1,0 +1,36 @@
+/* Header.css */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2a3d45; /* Color de fondo */
+    padding: 10px 20px;
+    color: white;
+}
+
+.header-logo h1 {
+    font-size: 24px;
+    color: #ffffff;
+}
+
+.header-nav .nav-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.header-nav .nav-list li {
+    margin: 0 15px;
+}
+
+.header-nav .nav-list a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+
+.header-nav .nav-list a:hover {
+    color: #00bcd4; /* Color al pasar el mouse */
+}

@@ -125,6 +125,50 @@ app.get("/api/sensordata/second-latest", async (req, res) => {
   }
 });
 
+// Endpoint para obtener los primeros 20 datos más recientes del Sensor 1
+app.get("/api/sensordata/sensor1/first-20", async (req, res) => {
+  try {
+    const data = await SensorData.find({ sensorId: 1 })
+      .sort({ timestamp: -1 })
+      .limit(20);
+
+    if (!data || data.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No se encontraron datos para el Sensor 1." });
+    }
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error al obtener los datos del Sensor 1" });
+  }
+});
+
+// Endpoint para obtener los primeros 20 datos más recientes del Sensor 2
+app.get("/api/sensordata/sensor2/first-20", async (req, res) => {
+  try {
+    const data = await SensorData.find({ sensorId: 2 })
+      .sort({ timestamp: -1 })
+      .limit(20);
+
+    if (!data || data.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No se encontraron datos para el Sensor 2." });
+    }
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error al obtener los datos del Sensor 2" });
+  }
+});
+
 // Manejo de Errores
 app.use((err, req, res, next) => {
   console.error("Error en el servidor:", err.stack);

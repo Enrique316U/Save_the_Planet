@@ -1,4 +1,46 @@
-// frontend/src/components/SensorData.js
+// Este archivo simula datos del sensor de forma independiente y proporciona acceso a los datos para otros componentes.
+
+const listeners = [];
+
+// Genera datos aleatorios de los sensores
+function getRandomSensorData() {
+  return [
+    {
+      name: "Sensor 1",
+      temperatura: (Math.random() * 40).toFixed(1), // Rango de temperatura
+      humedad: (Math.random() * 100).toFixed(1), // Rango de humedad
+      contaminacion: (Math.random() * 300).toFixed(1), // Rango de contaminación
+      sonido: (Math.random() * 100).toFixed(1), // Rango de sonido
+    },
+    {
+      name: "Sensor 2",
+      temperatura: (Math.random() * 40).toFixed(1),
+      humedad: (Math.random() * 100).toFixed(1),
+      contaminacion: (Math.random() * 300).toFixed(1),
+      sonido: (Math.random() * 100).toFixed(1),
+    },
+  ];
+}
+
+// Permite que los componentes se registren para recibir actualizaciones de datos
+export function subscribeToSensorData(callback) {
+  listeners.push(callback);
+  callback(getRandomSensorData()); // Envia datos iniciales
+
+  // Retorna una función para cancelar la suscripción cuando el componente se desmonte
+  return () => {
+    const index = listeners.indexOf(callback);
+    if (index !== -1) listeners.splice(index, 1);
+  };
+}
+
+// Actualiza los datos de los sensores cada 10 segundos y notifica a los componentes suscritos
+setInterval(() => {
+  const newData = getRandomSensorData();
+  listeners.forEach((callback) => callback(newData)); // Notifica a cada componente
+}, 10000);
+
+/*// frontend/src/components/SensorData.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -68,3 +110,4 @@ const SensorData = () => {
 };
 
 export default SensorData;
+*/

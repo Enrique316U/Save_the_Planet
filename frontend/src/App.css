@@ -1,3 +1,42 @@
+/* Estilizar la barra de navegación */
+.header {
+  background-color: #d32f2f; /* Fondo rojo */
+  padding: 10px;
+  display: flex;
+  justify-content: flex-start; /* Alinea los botones a la izquierda */
+}
+
+.header ul {
+  list-style-type: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.header li {
+  display: inline;
+  margin-right: 20px; /* Espacio entre los botones */
+}
+
+.header a {
+  color: white; /* Letras de color blanco */
+  text-decoration: none;
+  font-size: 18px;
+  padding: 8px 15px;
+  border-radius: 5px;
+}
+
+/* Estilo específico para el botón de Home */
+.header a[href="/"] {
+  background-color: white; /* Fondo blanco */
+  color: #d32f2f; /* Letras color rojo */
+}
+
+/* Hover effect para los botones */
+.header a:hover {
+  text-decoration: underline;
+}
+
 .App {
   text-align: center;
 }

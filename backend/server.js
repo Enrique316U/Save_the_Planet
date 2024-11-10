@@ -3,6 +3,9 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mqtt = require("mqtt");
+const fs = require("fs");
+const path = require("path");
+
 const SensorData = require("./models/SensorData");
 require("dotenv").config();
 
@@ -23,27 +26,51 @@ mongoose
     process.exit(1);
   });
 
-// Conectar al broker MQTT
-const mqttBrokerUrl = "mqtt://broker.emqx.io:1883"; // URL del broker público
-const mqttClient = mqtt.connect(mqttBrokerUrl); // Conectar al broker
+// URL del broker MQTT seguro de HiveMQ
+const mqttBrokerUrl =
+  "mqtts://olivesquash-geejfl.a03.euc1.aws.hivemq.cloud:8883";
+
+// Opciones de conexión MQTT con TLS/SSL
+const mqttOptions = {
+  clientId: "Daddy", // Aquí asignas tu propio Client ID
+  username: "root", // Reemplaza con tu usuario de HiveMQ
+  password: "root", // Reemplaza con tu contraseña de HiveMQ
+  ca: [fs.readFileSync("./certs/ca_certificate.pem")], // Reemplaza la ruta por la ubicación del certificado
+  rejectUnauthorized: false, // Verifica el certificado del servidor
+};
+
+// Establece la conexión MQTT
+const mqttClient = mqtt.connect(mqttBrokerUrl, mqttOptions);
 
 // Suscribirse a los topics de ambos sensores
 mqttClient.on("connect", () => {
-  console.log("Conectado al broker MQTT");
+  console.log("Conectado al broker MQTT seguro de HiveMQ");
+
+  mqttClient.on("error", (err) => {
+    console.error("Error en la conexión MQTT:", err);
+  });
+
+  mqttClient.on("close", () => {
+    console.log("Conexión cerrada");
+  });
+
+  mqttClient.on("reconnect", () => {
+    console.log("Reintentando la conexión...");
+  });
 
   // Suscribirse al topic del sensor 1
-  mqttClient.subscribe("esp32/sensor/datos3a3WYwBHfmqkX2", (err) => {
+  mqttClient.subscribe("zenn01", (err) => {
     if (!err) {
-      console.log("Suscrito al topic 1 esp32/sensor/datos3a3WYwBHfmqkX2");
+      console.log("Suscrito al topic 1 zenn01");
     } else {
       console.error("Error al suscribirse al topic del sensor 1:", err);
     }
   });
 
   // Suscribirse al topic del sensor 2
-  mqttClient.subscribe("esp32/sensor/temperaturedeYHM1urghGF2M", (err) => {
+  mqttClient.subscribe("zenn02", (err) => {
     if (!err) {
-      console.log("Suscrito al topic 2 esp32/sensor/temperaturedeYHM1urghGF2M");
+      console.log("Suscrito al topic 2 zenn02");
     } else {
       console.error("Error al suscribirse al topic del sensor 2:", err);
     }
@@ -61,9 +88,9 @@ mqttClient.on("message", async (topic, message) => {
     sensorData.timestamp = new Date();
 
     // Determinar de qué sensor provienen los datos según el topic
-    if (topic === "esp32/sensor/datos3a3WYwBHfmqkX2") {
+    if (topic === "zenn01") {
       sensorData.sensorId = 1; // Identificador para el Sensor 1
-    } else if (topic === "esp32/sensor/temperaturedeYHM1urghGF2M") {
+    } else if (topic === "zenn02") {
       sensorData.sensorId = 2; // Identificador para el Sensor 2
     }
 

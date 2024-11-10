@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { subscribeToSensorData } from "./SensorData";
 import "../estilos/Boletin.css";
 /*
 function Boletin() {

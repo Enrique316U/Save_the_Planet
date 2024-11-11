@@ -9,6 +9,9 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "bootstrap/dist/css/bootstrap.min.css"; // Asegúrate de importar Bootstrap CSS
+import "../estilos/Grafica.css"; // Importar el CSS personalizado
 
 function Grafica({ sensorEndpoint, title }) {
   const [data, setData] = useState([]);
@@ -51,38 +54,43 @@ function Grafica({ sensorEndpoint, title }) {
 
   const updateChartSize = () => {
     if (chartContainerRef.current) {
-      const { width, height } =
-        chartContainerRef.current.getBoundingClientRect();
+      const { width } = chartContainerRef.current.getBoundingClientRect();
       const containerHeight = window.innerHeight - 100;
-      setChartSize({ width, height: Math.min(height, containerHeight) });
+      setChartSize({
+        width: width - 20,
+        height: Math.min(500, containerHeight),
+      }); // Ajuste de ancho
     }
   };
 
   return (
-    <div ref={chartContainerRef}>
-      <h3>{title}</h3>
-      <LineChart
-        width={chartSize.width}
-        height={chartSize.height + 40}
-        data={data}
-      >
-        <XAxis dataKey="name" />
-        <YAxis />
-        <CartesianGrid strokeDasharray="3 3" />
-        <Tooltip />
-        <Legend />
-        <Line type="monotone" dataKey="temperatura" stroke="#8884d8" />
-        <Line type="monotone" dataKey="humedad" stroke="#82ca9d" />
-        <Line type="monotone" dataKey="contaminacion" stroke="#ffc658" />
-        <Line type="monotone" dataKey="sonido" stroke="#ff7300" />
-      </LineChart>
+    <div ref={chartContainerRef} className="chart-container mb-4">
+      <h3 className="chart-title">{title}</h3>
+      <div className="table-responsive">
+        <LineChart
+          width={chartSize.width}
+          height={chartSize.height}
+          data={data}
+          className="recharts-wrapper"
+        >
+          <XAxis dataKey="name" />
+          <YAxis />
+          <CartesianGrid strokeDasharray="3 3" />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="temperatura" stroke="#8884d8" />
+          <Line type="monotone" dataKey="humedad" stroke="#82ca9d" />
+          <Line type="monotone" dataKey="contaminacion" stroke="#ffc658" />
+          <Line type="monotone" dataKey="sonido" stroke="#ff7300" />
+        </LineChart>
+      </div>
     </div>
   );
 }
 
 function GraficasSensores() {
   return (
-    <div>
+    <div className="container">
       <Grafica
         sensorEndpoint="http://ubuntu-pi:5000/api/sensordata/sensor1/first-20"
         title="Sensor 1"

@@ -1,143 +1,171 @@
 import React, { useState, useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
 import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../estilos/MapComponent.css";
 
 function MapComponent() {
-  const [sensor1Data, setSensor1Data] = useState(null);
-  const [sensor2Data, setSensor2Data] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [sensorData, setSensorData] = useState([null, null]);
+  const [activeVariable, setActiveVariable] = useState("contaminacion"); // Variable activa
   const mapContainerRef = useRef(null);
-  const [mapSize, setMapSize] = useState({ width: "100%", height: "900px" });
 
   useEffect(() => {
     const fetchSensorData = async () => {
       try {
-        // Obtener los datos de cada sensor
         const [sensor1Response, sensor2Response] = await Promise.all([
           axios.get("http://ubuntu-pi:5000/api/sensordata/sensor1/first-20"),
           axios.get("http://ubuntu-pi:5000/api/sensordata/sensor2/first-20"),
         ]);
 
-        // Tomar el último registro de cada sensor como el más reciente
-        setSensor1Data(sensor1Response.data[0]);
-        setSensor2Data(sensor2Response.data[0]);
+        setSensorData([sensor1Response.data[0], sensor2Response.data[0]]);
       } catch (error) {
         console.error("Error al obtener los datos de los sensores:", error);
       }
     };
 
     fetchSensorData();
-    const interval = setInterval(fetchSensorData, 10000); // Actualizar cada 10 segundos
+    const interval = setInterval(fetchSensorData, 10000);
 
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    updateMapSize();
-    window.addEventListener("resize", updateMapSize);
-    return () => window.removeEventListener("resize", updateMapSize);
-  }, []);
+  const handleMarkerDragEnd = (event, index) => {
+    const { lat, lng } = event.target.getLatLng();
+    setSensorData((prevData) => {
+      const updatedData = [...prevData];
+      updatedData[index] = {
+        ...updatedData[index],
+        location: { lat, lng },
+      };
+      return updatedData;
+    });
+  };
 
-  const updateMapSize = () => {
-    if (mapContainerRef.current) {
-      const { width, height } = mapContainerRef.current.getBoundingClientRect();
-      const containerHeight = window.innerHeight - 100;
-      setMapSize({
-        width: "100%",
-        height: Math.min(height, containerHeight) + "px",
-      });
+  const getColorBasedOnData = (sensor) => {
+    if (!sensor) return "gray";
+    const value = sensor[activeVariable];
+
+    switch (activeVariable) {
+      case "temperatura":
+        return value < 20 ? "blue" : value < 30 ? "green" : "red";
+      case "humedad":
+        return value < 30 ? "lightblue" : value < 60 ? "blue" : "darkblue";
+      case "contaminacion":
+        return value < 200
+          ? "green"
+          : value < 400
+          ? "yellow"
+          : value < 600
+          ? "orange"
+          : "red";
+      case "sonido":
+        return value < 50
+          ? "lightgreen"
+          : value < 70
+          ? "yellowgreen"
+          : "darkgreen";
+      default:
+        return "gray";
     }
   };
 
-  const handleMarkerDragEnd = (event, sensor, setSensorData) => {
-    const { lat, lng } = event.target.getLatLng();
-    setSensorData((prevData) => ({
-      ...prevData,
-      location: { lat, lng },
-    }));
-  };
-
-  const toggleEditMode = () => {
-    setIsEditing((prev) => !prev);
-  };
-
   return (
-    <div ref={mapContainerRef}>
-      <div style={{ textAlign: "center", marginBottom: "10px" }}>
-        {isEditing ? (
-          <button onClick={toggleEditMode}>
-            Guardar Posición de los Sensores
+    <div className="map-container">
+      <div className="row">
+        <div className="col-9">
+          <MapContainer
+            center={[-16.422632, -71.520943]}
+            zoom={17}
+            style={{
+              width: "100%",
+              height: "100vh",
+              marginTop: "0px",
+            }}
+            ref={mapContainerRef}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+
+            {sensorData.map(
+              (sensor, index) =>
+                sensor && (
+                  <Marker
+                    key={index}
+                    position={
+                      sensor.location || [
+                        -16.422632 + index * -0.0006,
+                        -71.520943 + index * -0.0007,
+                      ]
+                    }
+                    eventHandlers={{
+                      dragend: (event) => handleMarkerDragEnd(event, index),
+                    }}
+                  >
+                    <Popup>
+                      <div>
+                        <h5>{`Sensor ${index + 1}`}</h5>
+                        <p>
+                          <strong>Temperatura:</strong> {sensor.temperatura} °C
+                          <br />
+                          <strong>Humedad:</strong> {sensor.humedad} %<br />
+                          <strong>Contaminación:</strong> {sensor.contaminacion}{" "}
+                          ppm
+                          <br />
+                          <strong>Sonido:</strong> {sensor.sonido} dB
+                        </p>
+                      </div>
+                    </Popup>
+                    <Circle
+                      center={
+                        sensor.location || [
+                          -16.422632 + index * -0.0006,
+                          -71.520943 + index * -0.0007,
+                        ]
+                      }
+                      radius={50}
+                      pathOptions={{
+                        color: getColorBasedOnData(sensor),
+                        fillColor: getColorBasedOnData(sensor),
+                        fillOpacity: 0.5,
+                      }}
+                    />
+                  </Marker>
+                )
+            )}
+          </MapContainer>
+        </div>
+        <div className="col-3 d-flex flex-column justify-content-center">
+          <button
+            className="custom-button mb-2"
+            onClick={() => setActiveVariable("temperatura")}
+          >
+            Temperatura
           </button>
-        ) : (
-          <button onClick={toggleEditMode}>Mover Posición de Sensores</button>
-        )}
+          <button
+            className="custom-button mb-2"
+            onClick={() => setActiveVariable("humedad")}
+          >
+            Humedad
+          </button>
+          <button
+            className="custom-button mb-2"
+            onClick={() => setActiveVariable("contaminacion")}
+          >
+            Contaminación
+          </button>
+          <button
+            className="custom-button mb-2"
+            onClick={() => setActiveVariable("sonido")}
+          >
+            Sonido
+          </button>
+        </div>
       </div>
-
-      <MapContainer
-        center={[-16.422632, -71.520943]} // Ubicación inicial
-        zoom={17}
-        style={{
-          width: mapSize.width,
-          height: mapSize.height,
-          marginTop: "0px",
-        }}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
-
-        {/* Marcador del Sensor 1 */}
-        {sensor1Data && (
-          <Marker
-            position={sensor1Data.location || [-16.422632, -71.520943]}
-            draggable={isEditing}
-            eventHandlers={{
-              dragend: (event) =>
-                handleMarkerDragEnd(event, "sensor1", setSensor1Data),
-            }}
-          >
-            <Popup>
-              <div>
-                <strong>Sensor 1</strong> <br />
-                <strong>Temperatura:</strong> {sensor1Data.temperatura} °C{" "}
-                <br />
-                <strong>Humedad:</strong> {sensor1Data.humedad} % <br />
-                <strong>Contaminación:</strong> {sensor1Data.contaminacion} ppm{" "}
-                <br />
-                <strong>Sonido:</strong> {sensor1Data.sonido} dB <br />
-              </div>
-            </Popup>
-          </Marker>
-        )}
-
-        {/* Marcador del Sensor 2 */}
-        {sensor2Data && (
-          <Marker
-            position={sensor2Data.location || [-16.423232, -71.521643]} // Posición ligeramente diferente para el Sensor 2
-            draggable={isEditing}
-            eventHandlers={{
-              dragend: (event) =>
-                handleMarkerDragEnd(event, "sensor2", setSensor2Data),
-            }}
-          >
-            <Popup>
-              <div>
-                <strong>Sensor 2</strong> <br />
-                <strong>Temperatura:</strong> {sensor2Data.temperatura} °C{" "}
-                <br />
-                <strong>Humedad:</strong> {sensor2Data.humedad} % <br />
-                <strong>Contaminación:</strong> {sensor2Data.contaminacion} ppm{" "}
-                <br />
-                <strong>Sonido:</strong> {sensor2Data.sonido} dB <br />
-              </div>
-            </Popup>
-          </Marker>
-        )}
-      </MapContainer>
     </div>
   );
 }

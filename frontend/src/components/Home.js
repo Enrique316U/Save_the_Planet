@@ -1,56 +1,54 @@
 import React from "react";
 import "../estilos/Home.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 function Home() {
   return (
     <div className="home-container">
-      <h1>Universidad San Martín de Porres</h1>
-      <h2>Filial Sur - Arequipa</h2>
+      <h1>
+        Plataforma Cloud para el Control y Monitoreo de la Contaminación
+        Ambiental y Sonora
+      </h1>
       <p>
-        La Universidad San Martín de Porres, filial Sur en Arequipa, es
-        reconocida por su compromiso con la excelencia académica y su enfoque en
-        la innovación tecnológica para mejorar la calidad de vida de la
-        comunidad.
+        Este proyecto ha sido desarrollado como parte de la asignatura Sistemas
+        Operativos en la Universidad de San Martín de Porres, por los
+        estudiantes Enrique Estrada, Walter Moisés, bajo la guía y supervisión
+        del Dr. Guido.
       </p>
 
       <section className="system-info">
-        <h2>Sistema Integrado de Monitoreo Ambiental</h2>
+        <h2>Objetivos</h2>
         <p>
-          Este proyecto de monitoreo ambiental utiliza tecnología IoT para
-          evaluar y gestionar la calidad del aire y otros indicadores
-          ambientales en la ciudad de Arequipa. Mediante una red de sensores, el
-          sistema mide parámetros como temperatura, humedad, nivel de ruido y
-          contaminación. La información se procesa en una plataforma en la nube
-          para ofrecer visualizaciones y análisis en tiempo real.
+          La plataforma tiene como propósito brindar una solución innovadora y
+          accesible para el monitoreo en tiempo real de niveles de contaminación
+          ambiental y sonora en entornos urbanos y rurales. Mediante la
+          tecnología cloud, el sistema recopila y procesa datos precisos de
+          múltiples sensores, ofreciendo información visual y accesible desde
+          cualquier dispositivo. Esta herramienta está diseñada para facilitar
+          el análisis, generar reportes detallados y emitir alertas, permitiendo
+          la rápida identificación de niveles críticos de contaminación. Con
+          esta propuesta, buscamos no solo presentar un proyecto técnicamente
+          sólido, sino también promover la conciencia ambiental y contribuir al
+          desarrollo de soluciones tecnológicas que aborden problemáticas de
+          alto impacto en nuestra sociedad.
         </p>
-      </section>
-
-      <section className="features">
-        <h2>Características del Sistema</h2>
-        <ul>
-          <li>Monitoreo en tiempo real de parámetros ambientales.</li>
-          <li>
-            Alertas automáticas cuando se detectan niveles críticos de
-            contaminación.
-          </li>
-          <li>Visualización de datos en gráficos y mapas interactivos.</li>
-          <li>
-            Acceso a informes detallados para el análisis y la toma de
-            decisiones.
-          </li>
-        </ul>
       </section>
 
       <section className="media-section">
         <h2>Galería de Imágenes</h2>
         <div className="image-gallery">
-          {/* Sección para agregar imágenes, cada imagen puede representarse con un div para ser estilizada */}
           <div className="image-card">
-            <img src="/img/sensor1.jpeg" alt="Descripción de la imagen 1" />
+            <img
+              src="/img/sensor1.jpeg"
+              alt="Monitor de calidad del aire en el campus"
+            />
             <p>Monitor de calidad del aire en el campus</p>
           </div>
           <div className="image-card">
-            <img src="/img/sensor2.jpg" alt="Descripción de la imagen 2" />
+            <img
+              src="/img/sensor2.jpg"
+              alt="Estación de monitoreo en Arequipa"
+            />
             <p>Estación de monitoreo en Arequipa</p>
           </div>
           {/* Más imágenes según sea necesario */}

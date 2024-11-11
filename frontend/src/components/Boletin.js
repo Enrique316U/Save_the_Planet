@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../estilos/Boletin.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 /*
 function Boletin() {
   // Estado para almacenar los datos de los sensores
@@ -68,7 +70,7 @@ function Boletin() {
   const updateData1 = async () => {
     try {
       const response = await fetch(
-        "http://ubuntu-pi:5000/api/sensordata/latest"
+        "http://192.168.77.58:5000/api/sensordata/latest"
       );
       const data = await response.json();
 
@@ -166,7 +168,7 @@ function Boletin() {
         </div>
 
         <div className={`card contamination ${alertLevel1}`}>
-          <h2>Nivel de Contaminación</h2>
+          <h2>Contaminación</h2>
           <div className="sensor-value">{contamination1} ppm</div>
           <div className="progress-bar">
             <div
@@ -221,7 +223,7 @@ function Boletin() {
         </div>
 
         <div className={`card contamination ${alertLevel2}`}>
-          <h2>Nivel de Contaminación</h2>
+          <h2>Contaminación</h2>
           <div className="sensor-value">{contamination2} ppm</div>
           <div className="progress-bar">
             <div

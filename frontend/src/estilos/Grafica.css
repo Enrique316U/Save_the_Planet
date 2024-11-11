@@ -1,0 +1,55 @@
+/* Estilo general para el contenedor de la gráfica */
+.chart-container {
+  background-color: #f8f9fa; /* Color de fondo claro */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 20px; /* Espaciado interno */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  max-width: 100%; /* Asegura que no exceda el ancho del contenedor */
+  margin: 0 auto; /* Centrado en el contenedor */
+}
+
+/* Estilo para el título de la gráfica */
+.chart-title {
+  font-size: 1.5rem; /* Tamaño de fuente */
+  margin-bottom: 1rem; /* Margen inferior */
+  color: #343a40; /* Color del texto */
+  text-align: center; /* Centrar el texto */
+}
+
+/* Estilo para los gráficos de Recharts */
+.recharts-wrapper {
+  margin: 0 auto; /* Centrar el gráfico */
+  width: 100%; /* Asegura que ocupe todo el ancho del contenedor */
+  max-width: 100%; /* No excede el ancho del contenedor */
+  height: auto; /* Ajuste automático de altura */
+}
+
+/* Asegurarse de que los gráficos sean responsivos */
+@media (max-width: 768px) {
+  .chart-container {
+    padding: 10px; /* Menos espaciado interno en pantallas pequeñas */
+    border-radius: 5px; /* Redondeado más sutil en pantallas pequeñas */
+  }
+
+  .chart-title {
+    font-size: 1.2rem; /* Reducir el tamaño del título en pantallas pequeñas */
+    margin-bottom: 0.8rem; /* Menos margen inferior */
+  }
+
+  /* Ajuste de los gráficos en pantallas pequeñas */
+  .recharts-wrapper {
+    width: 100%; /* Ocupa todo el ancho en pantallas pequeñas */
+    height: auto; /* Ajuste automático de altura */
+  }
+}
+
+/* Opcional: Estilos para pantallas aún más pequeñas */
+@media (max-width: 480px) {
+  .chart-container {
+    padding: 8px; /* Menos padding en pantallas extra pequeñas */
+  }
+
+  .chart-title {
+    font-size: 1rem; /* Tamaño de título aún más pequeño */
+  }
+}

@@ -1,28 +1,40 @@
 .home-container {
-  padding: 20px;
+  padding: 40px 20px; /* Aumentar el padding para un mejor espaciado */
   font-family: Arial, sans-serif;
+  background-color: #f9f9f9; /* Fondo claro para contraste */
+  color: #333; /* Color de texto más oscuro para mejor legibilidad */
+  max-width: 1200px; /* Limitar el ancho máximo del contenido */
+  margin: auto; /* Centrar el contenedor */
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
 
-h1, h2 {
+h1,
+h2 {
   color: #960404;
   text-align: center;
+  margin-bottom: 20px; /* Espaciado inferior */
 }
 
 p {
   text-align: justify;
   line-height: 1.6;
+  margin-bottom: 20px; /* Espaciado inferior */
 }
 
-.system-info, .features {
+.system-info,
+.features {
   margin: 20px 0;
-  padding: 15px;
+  padding: 20px;
   border-radius: 8px;
   background-color: #f0f0f5;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
 
 .features ul {
-  list-style-type: disc;
+  list-style-type: none;
   margin: 10px 20px;
+  padding-left: 20px;
 }
 
 .media-section {
@@ -39,6 +51,11 @@ p {
 .image-card {
   width: 200px;
   text-align: center;
+  transition: transform 0.3s; /* Efecto de transformación */
+}
+
+.image-card:hover {
+  transform: scale(1.05); /* Efecto de zoom al pasar el mouse */
 }
 
 .image-card img {
@@ -51,4 +68,16 @@ p {
   margin-top: 5px;
   font-size: 0.9rem;
   color: #666;
+}
+
+/* Estilos responsive */
+@media (max-width: 768px) {
+  .home-container {
+    padding: 20px; /* Reducir padding en pantallas pequeñas */
+  }
+
+  .image-card {
+    width: 100%; /* Hacer que las tarjetas ocupen el 100% en pantallas pequeñas */
+    max-width: 300px; /* Ancho máximo para las tarjetas */
+  }
 }
